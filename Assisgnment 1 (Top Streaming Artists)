@@ -1,6 +1,40 @@
-public static void main(String[] args){
-  int a = 5, b =9;
-  System.out.println(a+b);
+//Junior Hernandez
+//Data Structure
 
+import java.io.*;
+import java.util.*;
+public class TopStreamingArtist {
 
-}
+	public static void main(String[] args) throws IOException{
+		File csvFile = new File ("C:\\Users\\Junior\\Downloads\\regional-global-weekly-2020-01-17--2020-01-24.csv");
+		Scanner input = new Scanner (csvFile);
+		//creating a 2d array to show top 200 song 
+		String[][] topCharts = new String[200][5];
+		readData(topCharts,input);
+		input.close();
+	}//end of main
+	/**
+	 * readData will take in the read in the values from the file 
+	 * @param chart
+	 * @param input
+	 */
+	public static void readData(String[][] chart, Scanner input) {
+		while(input.hasNext()) {
+			String line = input.nextLine();
+			//line = input.nextLine();
+			//skips the intro
+			for(int i = 0; i < 200; i++) {
+			// i is the rows
+			line = input.nextLine();	
+			String[] lineSplit = line.split(",");
+			System.out.println();
+				for(int j=0; j<5;j++) {
+					//j is the columns
+					chart[i][j]=lineSplit[j];
+					System.out.print(" | "+chart[i][j]);
+				}
+			}
+		}
+	}//end of readData method
+	
+}//end of class
