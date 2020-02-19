@@ -4,38 +4,88 @@
 import java.io.*;
 import java.util.*;
 public class TopStreamingArtist {
-
-	public static void main(String[] args) throws IOException{
-		String fileName = "";
-		File csvFile = new File ("filePath");
+	 Node head; // head of list 
+  
+    /* Linked list Node.  This inner class is made static so that 
+       main() can access it */
+    static class Node { 
+        int data; 
+        Node next; 
+        Node(int d) 
+        { 
+            data = d; 
+            next = null; 
+        } // Constructor 
+    }     
+	
+    
+    public static void main(String[] args) throws IOException{
+		File csvFile = new File ("C:\\Users\\Junior\\Downloads\\regional-global-weekly-2020-01-17--2020-01-24.csv");
 		Scanner input = new Scanner (csvFile);
+		
+		ArrayList<String> artistName = new ArrayList<String>();
 		//creating a 2d array to show top 200 song 
 		String[][] topCharts = new String[200][5];
-		readData(topCharts,input);
+		readData(topCharts,input, artistName);
+		
+		LinkedHashSet<String> hashSet = new LinkedHashSet<>(artistName);
+		ArrayList<String> artistWithoutDuplicates = new ArrayList<>(hashSet);
+		artistWithoutDuplicates.sort(String::compareToIgnoreCase);
+	    System.out.println(artistWithoutDuplicates);
+		//System.out.println(artistName);
 		input.close();
 	}//end of main
+	
+	
 	/**
 	 * readData will take in the read in the values from the file 
 	 * @param chart
 	 * @param input
 	 */
-	public static void readData(String[][] chart, Scanner input) {
-		while(input.hasNext()) {
-			String line = input.nextLine();
-			//line = input.nextLine();
-			//skips the intro
-			for(int i = 0; i < 200; i++) {
-			// i is the rows
-			line = input.nextLine();	
-			String[] lineSplit = line.split(",");
-			System.out.println();
-				for(int j=0; j<5;j++) {
-					//j is the columns
-					chart[i][j]=lineSplit[j];
-					System.out.print(" | "+chart[i][j]);
+	public static void readData(String[][] chart, Scanner inputFile, ArrayList<String> artistName) {
+		try{
+			while(inputFile.hasNext()) {
+				//must initialize header so it can be used in last column (j=4)
+				String position="", song="", artist="", streams="", url="";
+				String line = inputFile.nextLine();//removes the disclaimer
+				//assigns the header
+				System.out.printf("%9.40s |%-40.40s|%-20.20s  |%8.9s  |%8.40s","Position","Track Name","Artist","Streams","URL");
+				// i is the rows, there are 200 rows
+				for(int i = 0; i < 200; i++) {
+					//for row i take the line from the input file
+					line = inputFile.nextLine();	
+					//split that line by commas
+					String[] lineSplit = line.split(",");
+					System.out.println();
+					
+					
+					
+					for(int j=0; j<5;j++) {//assign each column to its proper location
+						if(j==0) 
+							chart[i][j]=position=lineSplit[j];
+						if(j==1) 
+							chart[i][j]=song=lineSplit[j];
+						if(j==2) {
+							chart[i][j]=artist=lineSplit[j];
+							artistName.add(chart[i][2]);
+						}
+						if(j==3)
+							chart[i][j]=streams=lineSplit[j];
+						if(j==4) {
+							chart[i][j]=url=lineSplit[j];
+							//				  |ranking|songName|artistName|streams|url
+							System.out.printf("%9.40s |%-40.40s|%-20.20s  |%8.9s  |%8.60s",position,song,artist,streams,url);
+						}
+					}
 				}
-			}
+			}	
+		}
+		//if the file cant not be read further then throw an error
+		catch (Exception e) {
+			System.out.println("File could not be read anymore data");
+			System.out.println();
 		}
 	}//end of readData method
+	
 	
 }//end of class
